@@ -1,0 +1,47 @@
+Name: Kevin Muirhead
+Date: February 35th, 2023
+
+Objective: Documentation for installing and configuring MobileOG-DB software and database.
+
+# Instructions based on the following website.
+https://github.com/clb21565/mobileOG-db/blob/main/mobileOG-pl/UsageGuidance.md
+
+# Download the mobileog-DB source code.
+git clone https://github.com/clb21565/mobileOG-db.git
+
+# Install the mobileog-DB conda environment.
+conda create --name mobileogdb_env 
+conda activate mobileogdb_env
+conda install -c conda-forge python=3.6.15
+conda install -c conda-forge biopython
+conda install -c bioconda prodigal
+conda install -c bioconda diamond
+conda install -c anaconda pandas
+
+# Export the conda environment
+conda env export > mobileogdb_env.yaml
+
+# Change directory.
+cd /bulk/IMCshared_bulk/shared/shared_software/mobileogs
+
+# Download database.
+# Get the link from here https://mobileogdb.flsi.cloud.vt.edu/
+wget "https://mobileogdb-downloads.s3.us-east-2.amazonaws.com/data-version-files/beatrix-1-6_v1_all.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3AL4C2VS6QHGRAFU%2F20230226%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20230226T050845Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=28fef598a264a65fd664952e5e86a8861d226ee6fb463e061af3a6ec564394e3" -O beatrix-1-6_v1_all.zip
+
+# uncompress zip compressed file using unzip command.
+unzip beatrix-1-6_v1_all.zip
+
+# Make Diamond Database:
+diamond makedb --in mobileOG-db_beatrix-1.6.All.faa -d mobileOG-db-beatrix-1.6.dmnd
+
+# Activate the conda environment.
+conda activate mobileogdb_env
+
+# Add write permissions to python script.
+chmod +x /bulk/IMCshared_bulk/shared/shared_software/mobileogs/mobileOG-db/mobileOG-pl/mobileOGs-pl-kyanite.py
+
+# Example command to run mobileOGs-pl-kyanite.sh workflow. 
+sbatch mobileog_db_sbatch.sh 
+
+### copy to your own directories and change files.
+
